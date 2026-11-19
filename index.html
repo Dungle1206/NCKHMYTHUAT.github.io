@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f2eb">
+    <meta name="description" content="Khám phá tranh bằng màu sắc, bố cục và lời kể tiếng Việt dành cho mọi người.">
+    <title>Nét &amp; Kể — Cùng nhìn tranh theo cách của bạn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Bỏ qua điều hướng, đến nội dung chính</a>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Nét và Kể, về đầu trang">
+        <span class="brand-mark" aria-hidden="true">n<span>&amp;</span>k</span>
+        <span>Nét <span class="brand-amp">&amp;</span> Kể</span>
+      </a>
+      <nav aria-label="Điều hướng chính">
+        <a href="#cach-hoat-dong">Cách hoạt động</a>
+        <a href="#loi-ke">Góc lắng nghe</a>
+      </nav>
+      <a class="header-link" href="#bat-dau">Bắt đầu <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> Nghệ thuật dành cho mọi giác quan</p>
+          <h1 id="hero-title">Mỗi bức tranh<br>đều có <em>một câu chuyện.</em></h1>
+          <p class="hero-description">Cùng khám phá bố cục, hòa sắc và nhịp điệu thị giác — rồi lắng nghe bức tranh kể chuyện bằng tiếng Việt.</p>
+          <a class="primary-link" href="#bat-dau">Khám phá một bức tranh <span aria-hidden="true">↓</span></a>
+          <div class="hero-note">
+            <span class="note-icon" aria-hidden="true">◉</span>
+            <span>Thiết kế cho người học mỹ thuật và người khiếm thị</span>
+          </div>
+        </div>
+        <div class="hero-art" aria-label="Minh họa trừu tượng với mặt trời, những ngọn đồi và nét vẽ mềm mại">
+          <div class="art-sun"></div>
+          <div class="art-orbit orbit-one"></div>
+          <div class="art-orbit orbit-two"></div>
+          <div class="art-hill hill-back"></div>
+          <div class="art-hill hill-front"></div>
+          <div class="art-stem"></div>
+          <div class="art-flower flower-one"><i></i><i></i><i></i><i></i><b></b></div>
+          <div class="art-flower flower-two"><i></i><i></i><i></i><i></i><b></b></div>
+          <span class="art-caption">một khu vườn trong nắng</span>
+          <span class="art-index">01 — 03</span>
+        </div>
+      </section>
+
+      <section class="steps" id="cach-hoat-dong" aria-label="Cách hoạt động">
+        <article class="step">
+          <span class="step-number">01</span>
+          <div><h2>Chọn một bức tranh</h2><p>Tải lên tác phẩm bạn muốn khám phá.</p></div>
+        </article>
+        <article class="step">
+          <span class="step-number">02</span>
+          <div><h2>Khám phá từng lớp</h2><p>Quan sát bố cục, màu sắc và nhịp điệu.</p></div>
+        </article>
+        <article class="step">
+          <span class="step-number">03</span>
+          <div><h2>Lắng nghe câu chuyện</h2><p>Nghe lời kể hoặc đọc theo nhịp của bạn.</p></div>
+        </article>
+      </section>
+
+      <section class="studio-section" id="bat-dau" aria-labelledby="studio-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Góc khám phá</p>
+            <h2 id="studio-title">Bức tranh của bạn</h2>
+          </div>
+          <p class="privacy-note"><span aria-hidden="true">✳</span> Ảnh được xử lý ngay trên thiết bị của bạn.</p>
+        </div>
+
+        <div class="studio-grid">
+          <div class="upload-panel">
+            <div class="panel-topline"><span>01 / TÁC PHẨM</span><span class="live-dot">● <span id="image-status">Chưa có ảnh</span></span></div>
+            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Chọn hoặc thả ảnh tác phẩm vào đây">
+              <input id="image-input" type="file" accept="image/*" hidden>
+              <div class="upload-placeholder" id="upload-placeholder">
+                <span class="upload-icon" aria-hidden="true">
+                  <svg viewBox="0 0 48 48" fill="none"><rect x="7" y="9" width="34" height="30" rx="4" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="1.5"/><path d="m9 34 10-10 7 7 5-5 8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <strong>Đặt một bức tranh vào đây</strong>
+                <span>hoặc <span class="browse-text">chọn ảnh từ thiết bị</span></span>
+                <span class="upload-hint">JPG, PNG, WEBP · tối đa 15 MB</span>
+              </div>
+              <img id="image-preview" alt="" hidden>
+              <span class="image-change-hint" id="image-change-hint" hidden>Chọn ảnh khác</span>
+            </div>
+            <p class="upload-error" id="upload-error" role="alert" hidden></p>
+            <button class="analyze-button" id="analyze-button" type="button" disabled>
+              <span>Khám phá bức tranh</span><span aria-hidden="true">↗</span>
+            </button>
+            <p class="mode-note">Phân tích thị giác ước lượng, không thay thế nhận xét của người xem.</p>
+          </div>
+
+          <div class="analysis-panel" aria-live="polite" aria-busy="false" id="analysis-panel">
+            <div class="panel-topline"><span>02 / NHỮNG GÌ TA CẢM NHẬN</span><span class="analysis-spark" aria-hidden="true">✳</span></div>
+            <div class="analysis-empty" id="analysis-empty">
+              <div class="empty-art" aria-hidden="true"><span>◌</span><i></i><b></b></div>
+              <h3>Một câu chuyện đang chờ.</h3>
+              <p>Chọn một bức tranh để bắt đầu hành trình khám phá bằng màu sắc và lời kể.</p>
+            </div>
+            <div id="analysis-result" hidden>
+              <p class="result-intro">Mình nhìn thấy trong bức tranh này…</p>
+              <div class="finding">
+                <span class="finding-label"><span aria-hidden="true">◫</span> BỐ CỤC</span>
+                <p id="composition-text"></p>
+              </div>
+              <div class="finding">
+                <span class="finding-label"><span aria-hidden="true">◉</span> HÒA SẮC</span>
+                <div class="palette" id="palette" aria-label="Bảng màu chủ đạo"></div>
+                <p id="color-text"></p>
+              </div>
+              <div class="finding">
+                <span class="finding-label"><span aria-hidden="true">〰</span> NHỊP ĐIỆU NÉT</span>
+                <p id="rhythm-text"></p>
+              </div>
+              <div class="story-card" id="loi-ke">
+                <div class="story-heading"><span class="story-mark" aria-hidden="true">“</span><span>LỜI KỂ CỦA BỨC TRANH</span></div>
+                <p id="story-text"></p>
+              </div>
+              <div class="audio-controls">
+                <button class="listen-button" id="listen-button" type="button" aria-label="Nghe lời kể">
+                  <span aria-hidden="true">▶</span> Nghe lời kể
+                </button>
+                <button class="stop-button" id="stop-button" type="button" aria-label="Dừng đọc lời kể" disabled>Dừng</button>
+                <label class="voice-speed" for="voice-speed">Tốc độ đọc
+                  <select id="voice-speed" aria-label="Tốc độ đọc">
+                    <option value="0.85">Chậm</option>
+                    <option value="1" selected>Bình thường</option>
+                    <option value="1.15">Nhanh</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="accessibility-tip"><span aria-hidden="true">◎</span> Mẹo nhỏ: Bạn có thể dùng phím Tab để di chuyển và phím Enter để chọn ảnh hoặc nghe lời kể.</p>
+      </section>
+
+      <section class="closing" aria-labelledby="closing-title">
+        <span class="closing-mark" aria-hidden="true">✳</span>
+        <div><p class="eyebrow">Nhìn theo cách của bạn</p><h2 id="closing-title">Không có cách cảm nhận nào là sai.</h2></div>
+        <p>Mỗi người đều có thể tìm thấy một điều riêng trong nghệ thuật.</p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="#" aria-label="Nét và Kể, về đầu trang"><span class="brand-mark" aria-hidden="true">n<span>&amp;</span>k</span><span>Nét <span class="brand-amp">&amp;</span> Kể</span></a>
+      <p>Một không gian nhỏ để nghệ thuật gần hơn với mọi người.</p>
+      <span>© 2025 Nét &amp; Kể</span>
+    </footer>
+    <canvas id="analysis-canvas" hidden></canvas>
+  </body>
+</html>
