@@ -188,6 +188,7 @@ function analyzeImage(image) {
     colorDescription: describeColors(colors, mean, contrast),
     rhythm: describeRhythm(texture, contrast),
     story: tellStory(regions, colors, mean, texture),
+    lyrics: writeLyrics(regions, colors, mean, texture),
   };
 }
 
@@ -247,6 +248,26 @@ function tellStory(regions, colors, mean, texture) {
   return `Hãy thử bắt đầu từ ${focus}. ${tone} ${light} ${pace} Có lẽ bức tranh đang thì thầm rằng: đôi khi chỉ cần chậm lại, ta sẽ nhìn thấy điều mình bỏ lỡ. Câu chuyện này được gợi ý từ sắc độ và bố cục; cảm nhận của bạn vẫn là điều quan trọng nhất.`;
 }
 
+function writeLyrics(regions, colors, mean, texture) {
+  const focus = maximumKey({ "phía trái": regions.left, "chính giữa": regions.center, "phía phải": regions.right });
+  const firstColor = colors[0]?.rgb ?? [140, 140, 130];
+  const colorLine = firstColor[0] > firstColor[2] * 1.18
+    ? "Sắc ấm hong miền ký ức."
+    : firstColor[2] > firstColor[0] * 1.15
+      ? "Sắc mát ru miền yên ả."
+      : "Muôn sắc đan thành lời ca.";
+  const lightLine = mean > 0.62
+    ? "Nắng mở lối, chân trời xanh."
+    : mean < 0.37
+      ? "Bóng sâu ôm điều chưa nói."
+      : "Ánh dịu khẽ chạm bờ vai.";
+  const rhythmLine = texture > 0.11
+    ? "Nét reo theo nhịp rộn ràng."
+    : "Nét trôi chậm giữa mênh mang.";
+
+  return `Từ ${focus}, câu hát khẽ ngân,\n${colorLine}\n${lightLine}\n${rhythmLine}\nChậm thôi, chậm thôi, nghe lòng mình gần bức tranh.`;
+}
+
 function maximumKey(values) {
   return Object.entries(values).sort((a, b) => b[1] - a[1])[0][0];
 }
@@ -256,6 +277,7 @@ function renderAnalysis(analysis) {
   document.querySelector("#color-text").textContent = analysis.colorDescription;
   document.querySelector("#rhythm-text").textContent = analysis.rhythm;
   document.querySelector("#story-text").textContent = analysis.story;
+  document.querySelector("#lyric-text").textContent = analysis.lyrics;
   currentStory = `${analysis.composition} ${analysis.colorDescription} ${analysis.rhythm} Lời kể: ${analysis.story}`;
   const palette = document.querySelector("#palette");
   palette.replaceChildren(...analysis.colors.map((color, index) => {
