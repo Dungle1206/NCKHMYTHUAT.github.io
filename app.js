@@ -14,16 +14,52 @@ const context = canvas.getContext("2d", { willReadFrequently: true });
 const listenButton = document.querySelector("#listen-button");
 const stopButton = document.querySelector("#stop-button");
 const voiceSpeed = document.querySelector("#voice-speed");
+const voiceSelect = document.querySelector("#voice-select");
+const voiceStatus = document.querySelector("#voice-status");
 const musicToggle = document.querySelector("#music-toggle");
 const analysisPerspective = document.querySelector("#analysis-perspective");
-const chatPrompt = document.querySelector("#chat-prompt");
-const chatStatus = document.querySelector("#chat-status");
 
 let selectedImage;
 let imageUrl;
 let currentStory = "";
 let narrationMusic;
 let currentAnalysis;
+let vietnameseVoices = [];
+
+function loadVietnameseVoices() {
+  if (!("speechSynthesis" in window)) return;
+  const previousVoice = vietnameseVoices[Number(voiceSelect.value)] ?? null;
+  vietnameseVoices = speechSynthesis.getVoices()
+    .filter((voice) => /^vi(?:-|$)/i.test(voice.lang))
+    .sort((a, b) => voicePreference(b) - voicePreference(a) || a.name.localeCompare(b.name));
+
+  voiceSelect.replaceChildren(new Option("Giọng Việt ưu tiên", "auto"));
+  vietnameseVoices.forEach((voice, index) => {
+    const option = new Option(`${voice.name} (${voice.lang})`, String(index));
+    voiceSelect.add(option);
+  });
+  if (previousVoice) {
+    const matchingVoice = vietnameseVoices.findIndex((voice) =>
+      voice.name === previousVoice.name && voice.lang === previousVoice.lang);
+    if (matchingVoice >= 0) voiceSelect.value = String(matchingVoice);
+  }
+  voiceStatus.textContent = vietnameseVoices.length
+    ? `Tìm thấy ${vietnameseVoices.length} giọng tiếng Việt. Có thể đổi giọng ở danh sách này.`
+    : "Chưa tìm thấy giọng tiếng Việt trên thiết bị. Hãy cài thêm giọng Việt trong cài đặt hệ điều hành.";
+}
+
+function voicePreference(voice) {
+  const name = voice.name.toLowerCase();
+  return (/(natural|neural)/.test(name) ? 4 : 0)
+    + (/google/.test(name) ? 2 : 0)
+    + (voice.default ? 1 : 0);
+}
+
+if ("speechSynthesis" in window) {
+  speechSynthesis.addEventListener("voiceschanged", loadVietnameseVoices);
+  loadVietnameseVoices();
+  window.setTimeout(loadVietnameseVoices, 300);
+}
 
 dropzone.addEventListener("click", () => input.click());
 dropzone.addEventListener("keydown", (event) => {
@@ -368,8 +404,6 @@ function renderAnalysis(analysis) {
     return swatch;
   }));
   renderSelectedPerspective();
-  chatPrompt.value = buildChatPrompt(analysis);
-  chatStatus.textContent = "";
 }
 
 function renderSelectedPerspective() {
@@ -393,25 +427,9 @@ function renderSelectedPerspective() {
   currentStory = `${composition} ${colorDescription} ${rhythm} Lời kể: ${spokenStory}`;
 }
 
-function buildChatPrompt(analysis) {
-  return `Hãy phân tích bức tranh tôi sẽ tự đính kèm. Trả lời bằng tiếng Việt, dễ hiểu và tôn trọng nhiều cách cảm nhận. Hãy phân biệt điều quan sát được với suy đoán, không khẳng định chắc chắn về tác giả hay bối cảnh nếu ảnh không cung cấp thông tin.\n\nGóc nhìn mong muốn: ${analysisPerspective.selectedOptions[0].textContent}.\n\nGợi ý quan sát từ trang web (chỉ mang tính tham khảo):\n- Bố cục: ${analysis.composition}\n- Màu sắc: ${analysis.colorDescription}\n- Nhịp điệu: ${analysis.rhythm}\n\nHãy bổ sung nhận xét dựa trên ảnh tôi đính kèm.`;
-}
-
 analysisPerspective.addEventListener("change", () => {
   renderSelectedPerspective();
   if (!stopButton.disabled) speakCurrentStory();
-});
-
-document.querySelectorAll(".chat-link").forEach((link) => {
-  link.addEventListener("click", async () => {
-    if (!currentAnalysis) return;
-    try {
-      await navigator.clipboard.writeText(buildChatPrompt(currentAnalysis));
-      chatStatus.textContent = "Đã sao chép hướng dẫn. Hãy dán vào chatbot và tự đính kèm ảnh.";
-    } catch {
-      chatStatus.textContent = "Không sao chép tự động được. Mở “Xem hướng dẫn gửi chatbot” để chọn và sao chép nội dung.";
-    }
-  });
 });
 
 listenButton.addEventListener("click", () => {
@@ -427,7 +445,11 @@ function speakCurrentStory() {
   speechSynthesis.cancel();
   startNarrationMusic();
   const utterance = new SpeechSynthesisUtterance(currentStory);
-  utterance.lang = "vi-VN";
+  const selectedVoice = voiceSelect.value === "auto"
+    ? vietnameseVoices[0]
+    : vietnameseVoices[Number(voiceSelect.value)];
+  if (selectedVoice) utterance.voice = selectedVoice;
+  utterance.lang = selectedVoice?.lang ?? "vi-VN";
   utterance.rate = Number(voiceSpeed.value);
   utterance.pitch = 1;
   utterance.volume = 1;
@@ -451,6 +473,12 @@ function speakCurrentStory() {
 }
 
 voiceSpeed.addEventListener("change", () => {
+  if (!stopButton.disabled) {
+    speakCurrentStory();
+  }
+});
+
+voiceSelect.addEventListener("change", () => {
   if (!stopButton.disabled) {
     speakCurrentStory();
   }

@@ -134,20 +134,6 @@
                     <option value="creative">Gợi ý sáng tác</option>
                   </select>
                 </label>
-                <div class="chat-options">
-                  <p>Muốn hỏi thêm? Mở chatbot, dán hướng dẫn đã sao chép và tự đính kèm ảnh:</p>
-                  <div class="chat-links">
-                    <a class="chat-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT ↗</a>
-                    <a class="chat-link" href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini ↗</a>
-                    <a class="chat-link" href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">Claude ↗</a>
-                  </div>
-                  <p class="chat-status" id="chat-status" role="status" aria-live="polite"></p>
-                  <details class="chat-prompt-details">
-                    <summary>Xem hướng dẫn gửi chatbot</summary>
-                    <textarea id="chat-prompt" rows="5" readonly aria-label="Hướng dẫn phân tích cho chatbot"></textarea>
-                  </details>
-                  <p class="privacy-note chat-privacy">Ảnh không được tự động tải lên; bạn chỉ chia sẻ nếu tự đính kèm trong chatbot.</p>
-                </div>
               </div>
               <div class="audio-controls">
                 <button class="listen-button" id="listen-button" type="button" aria-label="Nghe lời kể">
@@ -157,6 +143,11 @@
                 <label class="music-toggle" for="music-toggle">
                   <input id="music-toggle" type="checkbox" checked>
                   Nhạc nền
+                </label>
+                <label class="voice-select" for="voice-select">Giọng đọc
+                  <select id="voice-select" aria-label="Chọn giọng đọc">
+                    <option value="auto">Giọng Việt ưu tiên</option>
+                  </select>
                 </label>
                 <label class="voice-speed" for="voice-speed">Tốc độ đọc
                   <select id="voice-speed" aria-label="Tốc độ đọc">
@@ -168,6 +159,7 @@
                   </select>
                 </label>
               </div>
+              <p class="voice-status" id="voice-status" role="status" aria-live="polite"></p>
             </div>
           </div>
         </div>

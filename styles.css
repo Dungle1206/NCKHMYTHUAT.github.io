@@ -114,17 +114,7 @@ h1 em { color: #a75e42; font-weight: 500; }
 .analysis-options { display: grid; gap: 12px; margin-top: 12px; }
 .perspective-select { display: flex; align-items: center; gap: 8px; color: #77766d; font-size: 9px; }
 .perspective-select select { max-width: 100%; padding: 6px 20px 6px 8px; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 10px; }
-.chat-options { padding: 11px 12px; background: #f5f2eb; }
-.chat-options > p { margin: 0; color: #77766d; font-size: 9px; line-height: 1.6; }
-.chat-links { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
-.chat-link { padding: 6px 9px; border: 1px solid var(--line); color: #505a3e; font-size: 9px; text-decoration: none; }
-.chat-link:hover { background: #e8e7dc; }
-.chat-options .chat-status { min-height: 14px; margin-top: 6px; color: #65704f; }
-.chat-prompt-details { margin-top: 5px; color: #77766d; font-size: 9px; }
-.chat-prompt-details summary { cursor: pointer; }
-.chat-prompt-details textarea { display: block; width: 100%; margin-top: 7px; padding: 8px; border: 1px solid var(--line); background: #fffefa; color: var(--ink); font: 10px/1.5 var(--sans); resize: vertical; }
-.chat-options .chat-privacy { margin-top: 7px; }
-.audio-controls { display: flex; align-items: center; gap: 11px; margin-top: 13px; }
+.audio-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 11px; margin-top: 13px; }
 .listen-button { display: inline-flex; min-height: 34px; align-items: center; gap: 8px; padding: 0 12px; border: 0; background: #65704f; color: white; font-size: 10px; cursor: pointer; }
 .listen-button:hover { background: #505a3e; }
 .listen-button span { font-size: 8px; }
@@ -132,8 +122,11 @@ h1 em { color: #a75e42; font-weight: 500; }
 .stop-button:disabled { opacity: .48; cursor: not-allowed; }
 .music-toggle { display: flex; align-items: center; gap: 5px; color: #77766d; font-size: 9px; cursor: pointer; }
 .music-toggle input { accent-color: #65704f; }
+.voice-select { display: flex; align-items: center; gap: 6px; color: #77766d; font-size: 9px; }
+.voice-select select { max-width: 180px; padding: 5px 16px 5px 6px; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 9px; }
 .voice-speed { display: flex; align-items: center; gap: 6px; margin-left: auto; color: #77766d; font-size: 9px; }
 .voice-speed select { padding: 5px 16px 5px 6px; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 9px; }
+.voice-status { margin: 6px 0 0; color: #77766d; font-size: 9px; line-height: 1.5; }
 .accessibility-tip { margin: 15px 0 0; color: #77766d; font-size: 9px; }
 .accessibility-tip span { margin-right: 5px; color: #a45b40; font-size: 12px; }
 .closing { display: flex; min-height: 177px; align-items: center; gap: 22px; margin-top: 35px; padding: 32px 11.1%; background: #e8e7dc; }
