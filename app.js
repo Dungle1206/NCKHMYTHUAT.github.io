@@ -15,11 +15,15 @@ const listenButton = document.querySelector("#listen-button");
 const stopButton = document.querySelector("#stop-button");
 const voiceSpeed = document.querySelector("#voice-speed");
 const musicToggle = document.querySelector("#music-toggle");
+const analysisPerspective = document.querySelector("#analysis-perspective");
+const chatPrompt = document.querySelector("#chat-prompt");
+const chatStatus = document.querySelector("#chat-status");
 
 let selectedImage;
 let imageUrl;
 let currentStory = "";
 let narrationMusic;
+let currentAnalysis;
 
 dropzone.addEventListener("click", () => input.click());
 dropzone.addEventListener("keydown", (event) => {
@@ -351,12 +355,10 @@ function writeLyrics(focus, colors, mean, texture) {
 }
 
 function renderAnalysis(analysis) {
+  currentAnalysis = analysis;
   document.querySelector("#composition-text").textContent = analysis.composition;
   document.querySelector("#color-text").textContent = analysis.colorDescription;
   document.querySelector("#rhythm-text").textContent = analysis.rhythm;
-  const spokenStory = `${analysis.story}\n\n${analysis.lyrics}`;
-  document.querySelector("#story-text").textContent = spokenStory;
-  currentStory = `${analysis.composition} ${analysis.colorDescription} ${analysis.rhythm} Lời kể: ${spokenStory}`;
   const palette = document.querySelector("#palette");
   palette.replaceChildren(...analysis.colors.map((color, index) => {
     const swatch = document.createElement("span");
@@ -365,7 +367,52 @@ function renderAnalysis(analysis) {
     swatch.setAttribute("aria-label", `Màu chủ đạo ${index + 1}: ${color.hex}`);
     return swatch;
   }));
+  renderSelectedPerspective();
+  chatPrompt.value = buildChatPrompt(analysis);
+  chatStatus.textContent = "";
 }
+
+function renderSelectedPerspective() {
+  if (!currentAnalysis) return;
+  const { composition, colorDescription, rhythm, story, lyrics } = currentAnalysis;
+  let spokenStory;
+  switch (analysisPerspective.value) {
+    case "art":
+      spokenStory = `${composition} ${colorDescription} ${rhythm} Đây là những quan sát thị giác tự động; ý nghĩa của tác phẩm còn tùy thuộc vào cảm nhận của mỗi người.`;
+      break;
+    case "simple":
+      spokenStory = `Hãy nhìn thử ${composition.toLowerCase()} ${colorDescription} ${rhythm} Bạn có thể tự hỏi: màu sắc hoặc chi tiết nào khiến mình chú ý đầu tiên?`;
+      break;
+    case "creative":
+      spokenStory = `Gợi ý sáng tác: ${colorDescription} Thử đặt điểm nhấn ở ${composition.toLowerCase()} và tạo nhịp nét dựa trên gợi ý này: ${rhythm} Đây chỉ là bài tập tham khảo; bạn có thể biến đổi theo ý mình.`;
+      break;
+    default:
+      spokenStory = `${story}\n\n${lyrics}`;
+  }
+  document.querySelector("#story-text").textContent = spokenStory;
+  currentStory = `${composition} ${colorDescription} ${rhythm} Lời kể: ${spokenStory}`;
+}
+
+function buildChatPrompt(analysis) {
+  return `Hãy phân tích bức tranh tôi sẽ tự đính kèm. Trả lời bằng tiếng Việt, dễ hiểu và tôn trọng nhiều cách cảm nhận. Hãy phân biệt điều quan sát được với suy đoán, không khẳng định chắc chắn về tác giả hay bối cảnh nếu ảnh không cung cấp thông tin.\n\nGóc nhìn mong muốn: ${analysisPerspective.selectedOptions[0].textContent}.\n\nGợi ý quan sát từ trang web (chỉ mang tính tham khảo):\n- Bố cục: ${analysis.composition}\n- Màu sắc: ${analysis.colorDescription}\n- Nhịp điệu: ${analysis.rhythm}\n\nHãy bổ sung nhận xét dựa trên ảnh tôi đính kèm.`;
+}
+
+analysisPerspective.addEventListener("change", () => {
+  renderSelectedPerspective();
+  if (!stopButton.disabled) speakCurrentStory();
+});
+
+document.querySelectorAll(".chat-link").forEach((link) => {
+  link.addEventListener("click", async () => {
+    if (!currentAnalysis) return;
+    try {
+      await navigator.clipboard.writeText(buildChatPrompt(currentAnalysis));
+      chatStatus.textContent = "Đã sao chép hướng dẫn. Hãy dán vào chatbot và tự đính kèm ảnh.";
+    } catch {
+      chatStatus.textContent = "Không sao chép tự động được. Mở “Xem hướng dẫn gửi chatbot” để chọn và sao chép nội dung.";
+    }
+  });
+});
 
 listenButton.addEventListener("click", () => {
   if (!currentStory || !("speechSynthesis" in window)) {
@@ -432,56 +479,91 @@ function startNarrationMusic() {
   if (!AudioContext) return;
 
   const context = new AudioContext();
-  context.resume();
   const master = context.createGain();
   master.gain.setValueAtTime(0.0001, context.currentTime);
-  master.gain.exponentialRampToValueAtTime(0.018, context.currentTime + 1.2);
+  master.gain.exponentialRampToValueAtTime(0.3, context.currentTime + 2.5);
   master.connect(context.destination);
 
   const filter = context.createBiquadFilter();
   filter.type = "lowpass";
-  filter.frequency.value = 900;
-  filter.Q.value = 0.5;
+  filter.frequency.value = 1400;
+  filter.Q.value = 0.35;
   filter.connect(master);
 
-  const notes = [130.81, 196, 261.63];
-  notes.forEach((frequency, index) => {
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = index === 0 ? "sine" : "triangle";
-    oscillator.frequency.value = frequency;
-    gain.gain.value = index === 0 ? 0.45 : 0.16;
-    oscillator.connect(gain);
-    gain.connect(filter);
-    oscillator.start();
-  });
+  const delay = context.createDelay(1);
+  delay.delayTime.value = 0.32;
+  const feedback = context.createGain();
+  feedback.gain.value = 0.17;
+  const delayFilter = context.createBiquadFilter();
+  delayFilter.type = "lowpass";
+  delayFilter.frequency.value = 1100;
+  delay.connect(feedback);
+  feedback.connect(delay);
+  delay.connect(delayFilter);
+  delayFilter.connect(master);
 
-  let chimeIndex = 0;
-  const chimeNotes = [261.63, 329.63, 392, 293.66, 349.23, 440];
-  const playChime = () => {
+  const progressions = [
+    [130.81, 196, 261.63, 329.63],
+    [110, 164.81, 220, 261.63],
+    [87.31, 130.81, 174.61, 220],
+    [98, 146.83, 196, 246.94],
+  ];
+  let chordIndex = 0;
+  let activeChord = [];
+  const playChord = () => {
+    const now = context.currentTime;
+    activeChord.forEach(({ oscillator, gain }) => {
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setTargetAtTime(0.0001, now, 0.8);
+      oscillator.stop(now + 4);
+    });
+    activeChord = progressions[chordIndex % progressions.length].map((frequency) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.018, now + 2.2);
+      oscillator.connect(gain);
+      gain.connect(filter);
+      gain.connect(delay);
+      oscillator.start(now);
+      return { oscillator, gain };
+    });
+    chordIndex += 1;
+  };
+
+  const melody = [392, 349.23, 329.63, 261.63, 293.66, 329.63, 392, 329.63];
+  let melodyIndex = 0;
+  const playMelodyNote = () => {
     const now = context.currentTime;
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     oscillator.type = "sine";
-    oscillator.frequency.value = chimeNotes[chimeIndex % chimeNotes.length];
-    chimeIndex += 1;
+    oscillator.frequency.value = melody[melodyIndex % melody.length];
+    melodyIndex += 1;
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.045, now + 0.08);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
+    gain.gain.linearRampToValueAtTime(0.035, now + 0.12);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
     oscillator.connect(gain);
-    gain.connect(master);
+    gain.connect(filter);
+    gain.connect(delay);
     oscillator.start(now);
-    oscillator.stop(now + 3);
+    oscillator.stop(now + 2.5);
   };
 
-  playChime();
-  const chimeTimer = window.setInterval(playChime, 3800);
-  narrationMusic = { context, master, chimeTimer };
+  playChord();
+  playMelodyNote();
+  const chordTimer = window.setInterval(playChord, 9000);
+  const melodyTimer = window.setInterval(playMelodyNote, 2400);
+  narrationMusic = { context, master, chordTimer, melodyTimer };
+  context.resume();
 }
 
 function stopNarrationMusic() {
   if (!narrationMusic) return;
-  window.clearInterval(narrationMusic.chimeTimer);
+  window.clearInterval(narrationMusic.chordTimer);
+  window.clearInterval(narrationMusic.melodyTimer);
   const { context, master } = narrationMusic;
   narrationMusic = null;
   if (context.state === "closed") return;

@@ -125,6 +125,30 @@
                 <div class="story-heading"><span class="story-mark" aria-hidden="true">“</span><span>LỜI KỂ CỦA BỨC TRANH</span></div>
                 <p id="story-text"></p>
               </div>
+              <div class="analysis-options">
+                <label class="perspective-select" for="analysis-perspective">Góc nhìn
+                  <select id="analysis-perspective">
+                    <option value="story">Lời kể nhẹ nhàng</option>
+                    <option value="art">Phân tích mỹ thuật</option>
+                    <option value="simple">Giải thích dễ hiểu</option>
+                    <option value="creative">Gợi ý sáng tác</option>
+                  </select>
+                </label>
+                <div class="chat-options">
+                  <p>Muốn hỏi thêm? Mở chatbot, dán hướng dẫn đã sao chép và tự đính kèm ảnh:</p>
+                  <div class="chat-links">
+                    <a class="chat-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT ↗</a>
+                    <a class="chat-link" href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini ↗</a>
+                    <a class="chat-link" href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">Claude ↗</a>
+                  </div>
+                  <p class="chat-status" id="chat-status" role="status" aria-live="polite"></p>
+                  <details class="chat-prompt-details">
+                    <summary>Xem hướng dẫn gửi chatbot</summary>
+                    <textarea id="chat-prompt" rows="5" readonly aria-label="Hướng dẫn phân tích cho chatbot"></textarea>
+                  </details>
+                  <p class="privacy-note chat-privacy">Ảnh không được tự động tải lên; bạn chỉ chia sẻ nếu tự đính kèm trong chatbot.</p>
+                </div>
+              </div>
               <div class="audio-controls">
                 <button class="listen-button" id="listen-button" type="button" aria-label="Nghe lời kể">
                   <span aria-hidden="true">▶</span> Nghe lời kể
