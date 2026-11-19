@@ -351,9 +351,9 @@ function renderAnalysis(analysis) {
   document.querySelector("#composition-text").textContent = analysis.composition;
   document.querySelector("#color-text").textContent = analysis.colorDescription;
   document.querySelector("#rhythm-text").textContent = analysis.rhythm;
-  document.querySelector("#story-text").textContent = analysis.story;
-  document.querySelector("#lyric-text").textContent = analysis.lyrics;
-  currentStory = `${analysis.composition} ${analysis.colorDescription} ${analysis.rhythm} Lời kể: ${analysis.story}`;
+  const spokenStory = `${analysis.story}\n\n${analysis.lyrics}`;
+  document.querySelector("#story-text").textContent = spokenStory;
+  currentStory = `${analysis.composition} ${analysis.colorDescription} ${analysis.rhythm} Lời kể: ${spokenStory}`;
   const palette = document.querySelector("#palette");
   palette.replaceChildren(...analysis.colors.map((color, index) => {
     const swatch = document.createElement("span");

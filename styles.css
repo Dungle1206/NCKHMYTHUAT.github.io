@@ -110,10 +110,7 @@ h1 em { color: #a75e42; font-weight: 500; }
 .story-card { margin-top: 8px; padding: 15px 16px 13px; background: #eeece4; }
 .story-heading { display: flex; align-items: center; gap: 7px; color: #77766d; font-size: 8px; font-weight: 700; letter-spacing: 1px; }
 .story-mark { color: #a45b40; font: 29px/20px var(--serif); }
-.story-card p { margin: 9px 0 0; color: #42443c; font: 13px/1.8 var(--serif); }
-.lyric-card { margin-top: 8px; padding: 15px 16px 13px; border: 1px solid #e8e5dd; }
-.lyric-mark { color: #a45b40; font: 15px/20px var(--serif); }
-.lyric-card p { margin: 9px 0 0; color: #42443c; font: italic 13px/1.9 var(--serif); white-space: pre-line; }
+.story-card p { margin: 9px 0 0; color: #42443c; font: 13px/1.8 var(--serif); white-space: pre-line; }
 .audio-controls { display: flex; align-items: center; gap: 11px; margin-top: 13px; }
 .listen-button { display: inline-flex; min-height: 34px; align-items: center; gap: 8px; padding: 0 12px; border: 0; background: #65704f; color: white; font-size: 10px; cursor: pointer; }
 .listen-button:hover { background: #505a3e; }
