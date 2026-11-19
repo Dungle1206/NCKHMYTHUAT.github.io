@@ -130,11 +130,17 @@
                   <span aria-hidden="true">▶</span> Nghe lời kể
                 </button>
                 <button class="stop-button" id="stop-button" type="button" aria-label="Dừng đọc lời kể" disabled>Dừng</button>
+                <label class="music-toggle" for="music-toggle">
+                  <input id="music-toggle" type="checkbox" checked>
+                  Nhạc nền
+                </label>
                 <label class="voice-speed" for="voice-speed">Tốc độ đọc
                   <select id="voice-speed" aria-label="Tốc độ đọc">
+                    <option value="0.65">Rất chậm</option>
                     <option value="0.85">Chậm</option>
                     <option value="1" selected>Bình thường</option>
                     <option value="1.15">Nhanh</option>
+                    <option value="1.4">Rất nhanh</option>
                   </select>
                 </label>
               </div>

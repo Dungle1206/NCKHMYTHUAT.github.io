@@ -14,10 +14,12 @@ const context = canvas.getContext("2d", { willReadFrequently: true });
 const listenButton = document.querySelector("#listen-button");
 const stopButton = document.querySelector("#stop-button");
 const voiceSpeed = document.querySelector("#voice-speed");
+const musicToggle = document.querySelector("#music-toggle");
 
 let selectedImage;
 let imageUrl;
 let currentStory = "";
+let narrationMusic;
 
 dropzone.addEventListener("click", () => input.click());
 dropzone.addEventListener("keydown", (event) => {
@@ -79,6 +81,7 @@ function loadImage(file) {
     analysisResult.hidden = true;
     analysisPanel.setAttribute("aria-busy", "false");
     speechSynthesis.cancel();
+    stopNarrationMusic();
     stopButton.disabled = true;
   };
   image.onerror = () => {
@@ -369,10 +372,18 @@ listenButton.addEventListener("click", () => {
     showError("Thiết bị hoặc trình duyệt này chưa hỗ trợ đọc lời kể thành tiếng.");
     return;
   }
+  speakCurrentStory();
+});
+
+function speakCurrentStory() {
+  if (!currentStory) return;
   speechSynthesis.cancel();
+  startNarrationMusic();
   const utterance = new SpeechSynthesisUtterance(currentStory);
   utterance.lang = "vi-VN";
   utterance.rate = Number(voiceSpeed.value);
+  utterance.pitch = 1;
+  utterance.volume = 1;
   utterance.onstart = () => {
     listenButton.disabled = true;
     stopButton.disabled = false;
@@ -380,17 +391,105 @@ listenButton.addEventListener("click", () => {
   utterance.onend = () => {
     listenButton.disabled = false;
     stopButton.disabled = true;
+    stopNarrationMusic();
   };
-  utterance.onerror = () => {
+  utterance.onerror = (event) => {
+    if (event.error === "canceled" || event.error === "interrupted") return;
     listenButton.disabled = false;
     stopButton.disabled = true;
+    stopNarrationMusic();
     showError("Không thể phát giọng đọc. Hãy kiểm tra hỗ trợ giọng tiếng Việt của thiết bị.");
   };
   speechSynthesis.speak(utterance);
+}
+
+voiceSpeed.addEventListener("change", () => {
+  if (!stopButton.disabled) {
+    speakCurrentStory();
+  }
 });
 
 stopButton.addEventListener("click", () => {
   speechSynthesis.cancel();
+  stopNarrationMusic();
   listenButton.disabled = false;
   stopButton.disabled = true;
 });
+
+musicToggle.addEventListener("change", () => {
+  if (!musicToggle.checked) {
+    stopNarrationMusic();
+  } else if (!stopButton.disabled) {
+    startNarrationMusic();
+  }
+});
+
+function startNarrationMusic() {
+  if (!musicToggle.checked) return;
+  stopNarrationMusic();
+
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+
+  const context = new AudioContext();
+  context.resume();
+  const master = context.createGain();
+  master.gain.setValueAtTime(0.0001, context.currentTime);
+  master.gain.exponentialRampToValueAtTime(0.018, context.currentTime + 1.2);
+  master.connect(context.destination);
+
+  const filter = context.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 900;
+  filter.Q.value = 0.5;
+  filter.connect(master);
+
+  const notes = [130.81, 196, 261.63];
+  notes.forEach((frequency, index) => {
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = index === 0 ? "sine" : "triangle";
+    oscillator.frequency.value = frequency;
+    gain.gain.value = index === 0 ? 0.45 : 0.16;
+    oscillator.connect(gain);
+    gain.connect(filter);
+    oscillator.start();
+  });
+
+  let chimeIndex = 0;
+  const chimeNotes = [261.63, 329.63, 392, 293.66, 349.23, 440];
+  const playChime = () => {
+    const now = context.currentTime;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = "sine";
+    oscillator.frequency.value = chimeNotes[chimeIndex % chimeNotes.length];
+    chimeIndex += 1;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.045, now + 0.08);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
+    oscillator.connect(gain);
+    gain.connect(master);
+    oscillator.start(now);
+    oscillator.stop(now + 3);
+  };
+
+  playChime();
+  const chimeTimer = window.setInterval(playChime, 3800);
+  narrationMusic = { context, master, chimeTimer };
+}
+
+function stopNarrationMusic() {
+  if (!narrationMusic) return;
+  window.clearInterval(narrationMusic.chimeTimer);
+  const { context, master } = narrationMusic;
+  narrationMusic = null;
+  if (context.state === "closed") return;
+  const now = context.currentTime;
+  master.gain.cancelScheduledValues(now);
+  master.gain.setValueAtTime(Math.max(master.gain.value, 0.0001), now);
+  master.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+  window.setTimeout(() => {
+    context.close().catch(() => {});
+  }, 800);
+}

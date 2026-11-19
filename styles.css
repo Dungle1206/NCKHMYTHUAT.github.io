@@ -117,6 +117,8 @@ h1 em { color: #a75e42; font-weight: 500; }
 .listen-button span { font-size: 8px; }
 .stop-button { min-height: 34px; padding: 0 12px; border: 1px solid var(--line); background: transparent; color: #55574f; font-size: 10px; cursor: pointer; }
 .stop-button:disabled { opacity: .48; cursor: not-allowed; }
+.music-toggle { display: flex; align-items: center; gap: 5px; color: #77766d; font-size: 9px; cursor: pointer; }
+.music-toggle input { accent-color: #65704f; }
 .voice-speed { display: flex; align-items: center; gap: 6px; margin-left: auto; color: #77766d; font-size: 9px; }
 .voice-speed select { padding: 5px 16px 5px 6px; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 9px; }
 .accessibility-tip { margin: 15px 0 0; color: #77766d; font-size: 9px; }
